@@ -5,17 +5,41 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
+import Family from "./pages/Family";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <BrowserRouter>
+
       <Routes>
+
         <Route path="/" element={<Login />} />
+
         <Route path="/register" element={<Register />} />
+
         <Route path="/forgot-password" element={<ForgotPassword />} />
+
         <Route path="/reset-password" element={<ResetPassword />} />
-        <Route path="/dashboard" element={<Dashboard/>}/>
+
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/family" element={
+            <ProtectedRoute>
+                <Family/>
+            </ProtectedRoute>
+        }/>
+
+
       </Routes>
+
     </BrowserRouter>
   );
 }

@@ -1,6 +1,7 @@
 import axios from "axios";
 import CryptoJS from "crypto-js";
 
+
 class ApiService {
 
   static BASE_URL = "http://localhost:5000/api";
@@ -36,6 +37,12 @@ class ApiService {
   static async loginUser(loginData) {
     const response = await this.API.post("/auth/login", loginData);
     return response.data;
+  }
+
+  //family 
+  static async getFamilyTree(){
+  const response = await this.API.get("/person/tree")
+  return response.data;
   }
 
 }
