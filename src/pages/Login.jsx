@@ -1,11 +1,12 @@
 import { useState } from "react";
 import ApiService from "../api/ApiService";
-
+import { useNavigate, Link } from "react-router-dom";
 export default function Login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
   const handleLogin = async (e) => {
 
     e.preventDefault();
@@ -22,7 +23,7 @@ export default function Login() {
       alert("Login Successful");
 
       localStorage.setItem("token", response.token);
-
+      navigate("/dashboard");
     } catch (error) {
 
       console.error(error);
