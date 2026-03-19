@@ -16,7 +16,7 @@ import {
 
 const menuItems = [
   { name: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { name: "परिवार", icon: Users, path: "/family" },
+  { name: "बंशावली", icon: Users, path: "/family" },
   { name: "हाम्रो इतिहास", icon: History, path: "/history" },
   { name: "हाम्रो परम्परा", icon: Landmark, path: "/tradition" },
   { name: "हाम्रो संस्कृति", icon: Flower, path: "/culture" },
@@ -39,7 +39,8 @@ const SideBar = () => {
 
       {/* Logo */}
       <div className="p-6 text-xl font-bold border-b">
-        Family Tree
+       हाम्रो बंशावली
+       
       </div>
 
       {/* Menu */}

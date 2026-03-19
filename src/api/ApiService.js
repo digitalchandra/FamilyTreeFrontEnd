@@ -39,11 +39,28 @@ class ApiService {
     return response.data;
   }
 
-  //family 
+  //family Get Family members 
   static async getFamilyTree(){
   const response = await this.API.get("/person/tree")
   return response.data;
   }
+  // add family member
+static async addPerson(data){
+  const response = await this.API.post("/person/add", data)
+  return response.data;
+}
+
+// update family member
+static async updatePerson(id,data){
+  const response = await this.API.put(`/person/update/${id}`, data)
+  return response.data;
+}
+
+// delete family member
+static async deletePerson(id){
+  const response = await this.API.delete(`/person/delete/${id}`)
+  return response.data;
+}
 
 }
 

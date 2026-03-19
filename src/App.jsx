@@ -6,6 +6,7 @@ import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Family from "./pages/Family";
+import AddFamilyMembers from "./pages/AddFamilyMembers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -34,6 +35,11 @@ function App() {
         <Route path="/family" element={
             <ProtectedRoute>
                 <Family/>
+            </ProtectedRoute>
+        }/>
+         <Route path="/addfamilymembers" element={
+            <ProtectedRoute>
+                <AddFamilyMembers/>
             </ProtectedRoute>
         }/>
 
