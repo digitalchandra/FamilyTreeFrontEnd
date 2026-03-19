@@ -8,14 +8,13 @@ class AuthService {
     }
 
     static async login(data) {
-
-        const response = await ApiService.post("/auth/login", data);
-
+        const response = await ApiService.API.post("/auth/login", data);
+    
         if (response.data.token) {
             TokenService.setToken(response.data.token);
         }
-
-        return response;
+    
+        return response.data;
     }
 
     // forgot password

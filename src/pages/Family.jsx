@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../api/ApiService";
 import Layout from "../components/Layout";
+import Tree from "react-d3-tree";
 
 /* ================= TREE NODE ================= */
 const TreeNode = ({ person, onSelect, onAddChild, onAddSpouse }) => {
@@ -38,12 +39,14 @@ const TreeNode = ({ person, onSelect, onAddChild, onAddSpouse }) => {
         {/* ACTION BUTTONS */}
         <div className="flex gap-2 text-xs">
 
-          <button
-            onClick={() => onAddChild(person)}
-            className="bg-blue-500 text-white px-2 py-1 rounded"
-          >
-            + Child
-          </button>
+            {person.gender !== "female" && (
+              <button
+                onClick={() => onAddChild(person)}
+                className="bg-blue-500 text-white px-2 py-1 rounded"
+              >
+                + Child
+              </button>
+            )}
 
           {!person.married && (
             <button
@@ -59,7 +62,7 @@ const TreeNode = ({ person, onSelect, onAddChild, onAddSpouse }) => {
       </div>
 
       {/* Children */}
-      {person.children?.length > 0 && (
+      {person.gender !== "female" && person.children?.length > 0 && (
         <div className="flex gap-8">
         {person.children.map((child) => (
           <TreeNode
@@ -87,6 +90,8 @@ export default function Family() {
     name: "",
     spouse: "",
     married: false,
+    gender: "male", 
+    details: "", 
   });
 
   /* ================= LOAD TREE ================= */
@@ -107,6 +112,8 @@ export default function Family() {
       name: person.name || "",
       spouse: person.spouse || "",
       married: person.married || false,
+      gender: person.gender || "male",
+      details: person.details || "",
     });
   };
 
@@ -114,7 +121,7 @@ export default function Family() {
   const handleUpdate = async () => {
     try {
       await ApiService.updatePerson(selectedPerson._id, formData);
-      alert("✅ Updated successfully");
+      alert(" Updated successfully");
 
       setSelectedPerson(null);
       refreshTree();
@@ -170,11 +177,13 @@ export default function Family() {
   const handleAdd = async () => {
     try {
       await ApiService.addPerson({
-        ...formData,
-        parentId,
+        name: formData.name,
+        gender: (formData.gender || "male").toLowerCase(),
+        details: formData.details,
+        parent: parentId || null,
       });
   
-      alert("✅ Added successfully");
+      alert(" Added successfully");
   
       setMode("edit");
       setParentId(null);
@@ -182,12 +191,14 @@ export default function Family() {
         name: "",
         spouse: "",
         married: false,
+        gender: "male",   // ✅ ADD THIS
+        details: ""
       });
   
       refreshTree();
     } catch (err) {
       console.error(err);
-      alert("❌ Add failed");
+      alert(" Add failed");
     }
   };
 
@@ -219,7 +230,7 @@ export default function Family() {
           <div className="fixed right-10 top-24 w-80 bg-white shadow-lg border rounded p-5">
 
             <h2 className="text-lg font-bold mb-4">
-              {mode === "edit" ? "✏️ Edit Member" : "➕ Add Member"}
+              {mode === "edit" ? "✏️ Edit Member" : " Add Member"}
             </h2>
 
             {/* Name */}
@@ -229,6 +240,14 @@ export default function Family() {
               value={formData.name}
               onChange={(e) =>
                 setFormData({ ...formData, name: e.target.value })
+              }
+              className="w-full p-2 border mb-3 rounded"
+            />
+            <textarea
+              placeholder="Contact / Details"
+              value={formData.details}
+              onChange={(e) =>
+                setFormData({ ...formData, details: e.target.value })
               }
               className="w-full p-2 border mb-3 rounded"
             />
@@ -248,8 +267,20 @@ export default function Family() {
               Married
             </label>
 
+            {/* Gender */}
+            <select
+              value={formData.gender}
+              onChange={(e) =>
+                setFormData({ ...formData, gender: e.target.value })
+              }
+              className="w-full p-2 border mb-3 rounded"
+            >
+              <option value="male">Male (Son)</option>
+              <option value="female">Female (Daughter)</option>
+            </select>
+
             {/* Spouse */}
-            {formData.married && (
+            {formData.married && formData.gender === "male" && (
               <input
                 type="text"
                 placeholder="Spouse Name"
@@ -263,6 +294,22 @@ export default function Family() {
                 className="w-full p-2 border mb-3 rounded"
               />
             )}
+
+            {/* Husband Fields  */}
+            {formData.gender === "female" && (
+                <input
+                  type="text"
+                  placeholder="Husband Name"
+                  value={formData.spouse}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      spouse: e.target.value,
+                    })
+                  }
+                  className="w-full p-2 border mb-3 rounded"
+                />
+              )}
 
             {/* Buttons */}
             <div className="flex gap-2 mt-4">

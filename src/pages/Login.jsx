@@ -39,7 +39,7 @@ export default function Login() {
       <div className="w-full max-w-md bg-white shadow-lg rounded-lg p-8">
 
         <h2 className="text-2xl font-bold text-center mb-6">
-          Login
+        श्रेष्ठ बंसवली गर्नुहोस।  
         </h2>
 
         <form onSubmit={handleLogin} className="space-y-4">
