@@ -1,13 +1,16 @@
 import { useState } from "react";
 import ApiService from "../api/ApiService";
+import { Link } from "react-router-dom";
 
 export default function Register() {
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
-    role: "SUPER_ADMIN"
+    role: "USER"
   });
 
   const handleChange = (e) => {
@@ -67,26 +70,27 @@ export default function Register() {
             required
           />
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            className="w-full border px-3 py-2 rounded"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+          {/* Password with eye toggle */}
+          <div className="relative">
 
-          <select
-            name="role"
-            className="w-full border px-3 py-2 rounded"
-            value={formData.role}
-            onChange={handleChange}
-          >
-            <option value="SUPER_ADMIN">SUPER ADMIN</option>
-            <option value="ADMIN">ADMIN</option>
-            <option value="USER">USER</option>
-          </select>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              className="w-full border px-3 py-2 rounded"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+
+            <span
+              className="absolute right-3 top-2 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? "🙈" : "👁"}
+            </span>
+
+          </div>
 
           <button
             type="submit"
@@ -96,6 +100,17 @@ export default function Register() {
           </button>
 
         </form>
+
+        {/* Login link */}
+        <p className="text-center text-sm mt-4">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-blue-500 font-semibold hover:underline"
+          >
+            Login
+          </Link>
+        </p>
 
       </div>
 

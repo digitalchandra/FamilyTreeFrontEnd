@@ -4,7 +4,7 @@ import TokenService from "../utils/TokenService";
 class ApiService {
 
   // ================= BASE CONFIG =================
-  static BASE_URL = "http://localhost:5000/api";
+  static BASE_URL = "https://chandrastha.com.np/api";
 
   static API = axios.create({
     baseURL: this.BASE_URL,

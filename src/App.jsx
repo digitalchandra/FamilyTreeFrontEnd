@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
+import Home from "./pages/Home";
 import Login from "./pages/Login";
+import Footer from "./components/footer";
+import NavMenu from "./components/NavMenu";
 import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -10,13 +13,18 @@ import AddFamilyMembers from "./pages/AddFamilyMembers";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
+
 function App() {
   return (
     <BrowserRouter>
 
+      <NavMenu />
+
       <Routes>
 
-        <Route path="/" element={<Login />} />
+        <Route path="/" element={<Home />} />
+
+        <Route path="/login" element={<Login />} />
 
         <Route path="/register" element={<Register />} />
 
@@ -32,19 +40,28 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/family" element={
-            <ProtectedRoute>
-                <Family/>
-            </ProtectedRoute>
-        }/>
-         <Route path="/addfamilymembers" element={
-            <ProtectedRoute>
-                <AddFamilyMembers/>
-            </ProtectedRoute>
-        }/>
 
+        <Route
+          path="/family"
+          element={
+            <ProtectedRoute>
+              <Family />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/addfamilymembers"
+          element={
+            <ProtectedRoute>
+              <AddFamilyMembers />
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
+
+      <Footer />
 
     </BrowserRouter>
   );

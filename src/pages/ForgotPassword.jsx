@@ -1,51 +1,73 @@
-import React, { useState } from "react";
-import AuthService from "../services/AuthService";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import ApiService from "../api/ApiService";
 
-function ForgotPassword() {
+export default function ForgotPassword() {
 
-    const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-        e.preventDefault();
+    try {
 
-        try {
+      const res = await ApiService.forgetPassword({ email });
 
-            await AuthService.forgotPassword(email);
+      setMessage(res.message || "Reset link sent to your email");
+      setError("");
+      setEmail("");
 
-            alert("Reset link sent to your email");
+    } catch (err) {
 
-        } catch (error) {
+      setError(
+        err?.response?.data?.message || "Something went wrong"
+      );
+      setMessage("");
+    }
+  };
 
-            alert("Error sending reset link");
+  return (
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
 
-        }
-    };
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-md">
 
-    return (
+        <h2 className="text-2xl font-bold text-center mb-6">
+          Forgot Password
+        </h2>
 
-        <div>
+        <form onSubmit={handleSubmit} className="space-y-4">
 
-            <h2>Forgot Password</h2>
+          <input
+            type="email"
+            placeholder="Enter your email"
+            className="w-full border rounded-lg p-2"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
 
-            <form onSubmit={handleSubmit}>
+          {message && <p className="text-green-600">{message}</p>}
+          {error && <p className="text-red-600">{error}</p>}
 
-                <input
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+          <button
+            className="w-full bg-blue-600 text-white py-2 rounded-lg"
+          >
+            Send Reset Link
+          </button>
 
-                <button type="submit">
-                    Send Reset Link
-                </button>
+        </form>
 
-            </form>
+        <div className="text-center mt-4">
+
+          <Link to="/login" className="text-blue-600">
+            Back to Login
+          </Link>
 
         </div>
 
-    );
+      </div>
+    </div>
+  );
 }
-
-export default ForgotPassword;
