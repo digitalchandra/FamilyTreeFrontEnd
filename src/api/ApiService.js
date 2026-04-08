@@ -66,6 +66,11 @@ class ApiService {
     return response.data;
   }
 
+  static async forgetPassword(data){
+    const response = await this.API.get("/auth/forgot-password");
+    return response.data;
+  }
+
   // ================= FAMILY APIs =================
   static async getFamilyTree() {
     const response = await this.API.get("/person/tree");
@@ -86,6 +91,7 @@ class ApiService {
     const response = await this.API.delete(`/person/delete/${id}`);
     return response.data;
   }
+  
 }
 
 //  IMPORTANT: Initialize interceptors ONCE

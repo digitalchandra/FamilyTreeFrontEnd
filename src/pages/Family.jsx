@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import ApiService from "../api/ApiService";
 import Layout from "../components/Layout";
-import Tree from "react-d3-tree";
+
 
 /* ================= TREE NODE ================= */
 const TreeNode = ({ person, onSelect, onAddChild, onAddSpouse }) => {
@@ -84,6 +84,7 @@ const TreeNode = ({ person, onSelect, onAddChild, onAddSpouse }) => {
 export default function Family() {
 
   const [tree, setTree] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedPerson, setSelectedPerson] = useState(null);
   const [mode, setMode] = useState("edit"); // edit | addChild | addSpouse
   const [parentId, setParentId] = useState(null);
@@ -96,10 +97,20 @@ export default function Family() {
   });
 
   /* ================= LOAD TREE ================= */
-  const refreshTree = () => {
-    ApiService.getFamilyTree()
-      .then((data) => setTree(data))
-      .catch((err) => console.error(err));
+
+  const refreshTree = async () => {
+    try {
+      setLoading(true);
+  
+      const data = await ApiService.getFamilyTree();
+  
+      setTree(data);
+  
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -133,27 +144,35 @@ export default function Family() {
     }
   };
 
+
+
   const handleAddChild = (person) => {
     setMode("addChild");
     setParentId(person._id);
-    setSelectedPerson(null);
+  
+    setSelectedPerson({ name: "New Member" }); // open modal
   
     setFormData({
       name: "",
       spouse: "",
       married: false,
+      gender: "male",
+      details: "",
     });
   };
   
   const handleAddSpouse = (person) => {
     setMode("addSpouse");
     setParentId(person._id);
-    setSelectedPerson(null);
+  
+    setSelectedPerson({ name: "New Spouse" }); // open modal
   
     setFormData({
       name: "",
       spouse: "",
       married: true,
+      gender: "female",
+      details: "",
     });
   };
 
@@ -214,7 +233,15 @@ export default function Family() {
           <span>हाम्रो बंशावली</span>
         </div>
 
+            {/* Loading */}
+            {loading && (
+          <div className="text-center py-10 text-gray-500">
+            Loading Family Tree...
+          </div>
+        )}
+
         {/* Tree */}
+        {!loading && (
         <div className="flex justify-center min-w-max mt-6">
           {tree.map((person) => (
               <TreeNode
@@ -226,6 +253,7 @@ export default function Family() {
               />
           ))}
         </div>
+        )}
 
         {/* ================= EDIT PANEL ================= */}
         {selectedPerson && (
@@ -273,7 +301,8 @@ export default function Family() {
       )}
 
       {/* ================= EDIT MODE ================= */}
-      {mode === "edit" && (
+      
+        {(mode === "edit" || mode === "addChild" || mode === "addSpouse") && (
         <>
           <h2 className="text-lg font-bold mb-4">✏️ Edit Member</h2>
 
@@ -339,12 +368,21 @@ export default function Family() {
           {/* Buttons */}
           <div className="flex gap-2 mt-4">
 
-            <button
-              onClick={handleUpdate}
-              className="flex-1 bg-green-500 text-white py-2 rounded"
-            >
-              Update
-            </button>
+           {mode === "edit" ? (
+              <button
+                onClick={handleUpdate}
+                className="flex-1 bg-green-500 text-white py-2 rounded"
+              >
+                Update
+              </button>
+            ) : (
+              <button
+                onClick={handleAdd}
+                className="flex-1 bg-blue-500 text-white py-2 rounded"
+              >
+                Save
+              </button>
+            )}
 
             <button
               onClick={handleDelete}
@@ -358,7 +396,7 @@ export default function Family() {
           {/* Back */}
           <button
             onClick={() => setMode("view")}
-            className="mt-3 text-sm text-gray-500 underline"
+            className="mt-3 text-md text-red-500 "
           >
             Back
           </button>

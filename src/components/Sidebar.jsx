@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import TokenService from "../utils/TokenService";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -11,7 +11,9 @@ import {
   Calendar,
   UserCircle,
   Settings,
-  LogOut
+  LogOut,
+  Menu,
+  X
 } from "lucide-react";
 
 const menuItems = [
@@ -28,6 +30,7 @@ const menuItems = [
 const SideBar = () => {
 
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const logout = () => {
     TokenService.removeToken();
@@ -35,56 +38,90 @@ const SideBar = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <>
+      {/* Mobile Header */}
+      <div className="flex lg:hidden items-center justify-between p-4 border-b bg-white">
+        <h1 className="font-bold">हाम्रो बंशावली</h1>
 
-      {/* Logo */}
-      <div className="p-6 text-xl font-bold border-b">
-       हाम्रो बंशावली
-       
-      </div>
-
-      {/* Menu */}
-      <nav className="flex-1 p-4 ">
-
-        {menuItems.map((item, index) => {
-          const Icon = item.icon;
-
-          return (
-            <Link
-              key={index}
-              to={item.path}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
-            >
-              <Icon size={20} />
-              <span>{item.name}</span>
-            </Link>
-          );
-        })}
-
-      </nav>
-
-      {/* Bottom Menu */}
-      <div className="p-4 border-t space-y-2">
-
-        <Link
-          to="/settings"
-          className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100 transition"
-        >
-          <Settings size={20} />
-          <span>Settings</span>
-        </Link>
-
-        <button
-          onClick={logout}
-          className="flex w-full items-center gap-3 p-3 rounded-lg hover:bg-red-100 text-red-600 transition"
-        >
-          <LogOut size={20} />
-          <span>Logout</span>
+        <button onClick={() => setOpen(true)}>
+          <Menu size={26} />
         </button>
-
       </div>
 
-    </div>
+      {/* Overlay */}
+      {open && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          onClick={() => setOpen(false)}
+        />
+      )}
+
+      {/* Sidebar */}
+      <div
+        className={`
+        fixed top-0 left-0 h-full w-64 bg-white border-r z-50
+        transform transition-transform duration-300
+        ${open ? "translate-x-0" : "-translate-x-full"}
+        lg:translate-x-0
+        `}
+      >
+
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b font-bold text-lg">
+          हाम्रो बंशावली
+
+          <button
+            className="lg:hidden"
+            onClick={() => setOpen(false)}
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* Menu */}
+        <nav className="p-4 space-y-2">
+
+          {menuItems.map((item, index) => {
+            const Icon = item.icon;
+
+            return (
+              <Link
+                key={index}
+                to={item.path}
+                onClick={() => setOpen(false)}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+              >
+                <Icon size={20} />
+                {item.name}
+              </Link>
+            );
+          })}
+
+        </nav>
+
+        {/* Bottom */}
+        <div className="absolute bottom-0 w-full p-4 border-t space-y-2">
+
+          <Link
+            to="/settings"
+            className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-100"
+          >
+            <Settings size={20} />
+            Settings
+          </Link>
+
+          <button
+            onClick={logout}
+            className="flex w-full items-center gap-3 p-3 rounded-lg text-red-600 hover:bg-red-100"
+          >
+            <LogOut size={20} />
+            Logout
+          </button>
+
+        </div>
+
+      </div>
+    </>
   );
 };
 
