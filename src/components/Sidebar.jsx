@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+
 import TokenService from "../utils/TokenService";
 import { useNavigate, Link } from "react-router-dom";
 
@@ -27,10 +27,9 @@ const menuItems = [
   { name: "प्रयोग कर्ताहरु", icon: UserCircle, path: "/users" },
 ];
 
-const SideBar = () => {
+const SideBar = ({ open, setOpen }) => {
 
   const navigate = useNavigate();
-  const [open, setOpen] = useState(false);
 
   const logout = () => {
     TokenService.removeToken();
@@ -41,7 +40,7 @@ const SideBar = () => {
     <>
       {/* Mobile Header */}
       <div className="flex lg:hidden items-center justify-between p-4 border-b bg-white">
-        <h1 className="font-bold">हाम्रो बंशावली</h1>
+       
 
         <button onClick={() => setOpen(true)}>
           <Menu size={26} />
@@ -51,20 +50,13 @@ const SideBar = () => {
       {/* Overlay */}
       {open && (
         <div
-          className="fixed inset-0 bg-black/40 z-40 lg:hidden"
+          className="lg:hidden"
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Sidebar */}
-      <div
-        className={`
-        fixed top-0 left-0 h-full w-64 bg-white border-r z-50
-        transform transition-transform duration-300
-        ${open ? "translate-x-0" : "-translate-x-full"}
-        lg:translate-x-0
-        `}
-      >
+
 
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b font-bold text-lg">
@@ -120,7 +112,7 @@ const SideBar = () => {
 
         </div>
 
-      </div>
+
     </>
   );
 };
